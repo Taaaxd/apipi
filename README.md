@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharkieee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(to bottom, #add8e6, #87ceeb);
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .pre-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #add8e6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+        }
+        .pre-loading h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        .pre-loading button {
+            font-family: 'Comic Neue', cursive;
+            font-size: 20px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            background: #ff69b4;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .pre-loading button:hover {
+            background: #ff1493;
+        }
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #add8e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none; /* Awalnya hidden */
+        }
+        .loading .love {
+            font-size: 50px;
+            color: #add8e6;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .container {
+            display: none;
+            padding: 20px;
+        }
+        .segment {
+            display: none;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .segment.active {
+            display: block;
+        }
+        .sharkie-decor {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.6;
+        }
+        /* Sharkie di segmen1 */
+        #segmen1 .sharkie-decor { top: 10px; right: 10px; }
+        /* Sharkie di segmen2 */
+        #segmen2 .sharkie-decor:nth-child(1) { bottom: 10px; left: 10px; }
+        #segmen2 .sharkie-decor:nth-child(2) { bottom: 10px; right: 10px; }
+        /* Sharkie di segmen3 */
+        #segmen3 .sharkie-decor:nth-child(1) { top: 10px; left: 50%; transform: translateX(-50%); }
+        #segmen3 .sharkie-decor:nth-child(2) { bottom: 10px; left: 10px; }
+        #segmen3 .sharkie-decor:nth-child(3) { bottom: 10px; right: 10px; }
+        /* Sharkie di segmen4 */
+        #segmen4 .sharkie-decor:nth-child(1) { top: 50%; left: 10px; transform: translateY(-50%); }
+        #segmen4 .sharkie-decor:nth-child(2) { top: 50%; right: 10px; transform: translateY(-50%); }
+        /* Sharkie di segmen5 */
+        #segmen5 .sharkie-decor:nth-child(1) { top: 10px; left: 10px; }
+        #segmen5 .sharkie-decor:nth-child(2) { top: 10px; right: 10px; }
+        #segmen5 .sharkie-decor:nth-child(3) { bottom: 10px; left: 10px; }
+        #segmen5 .sharkie-decor:nth-child(4) { bottom: 10px; right: 10px; }
+        .buttons {
+            margin-top: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #iya-mau {
+            position: relative;
+        }
+        #gamau {
+            position: absolute;
+            top: 60px; /* Di bawah iya mau */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        button {
+            font-family: 'Comic Neue', cursive;
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 50px;
+            background: #ff69b4;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #ff1493;
+        }
+        .floating-text {
+            position: absolute;
+            font-size: 20px;
+            color: #ff69b4;
+            animation: float 2s ease-out forwards;
+        }
+        @keyframes float {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
+        }
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .transition-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .transition-text {
+            font-size: 30px;
+            color: #ff69b4;
+        }
+        /* Animasi transisi berbeda */
+        .fade { animation: fadeAnim 2s ease-in-out; }
+        .slide { animation: slideAnim 2s ease-in-out; }
+        .zoom { animation: zoomAnim 2s ease-in-out; }
+        @keyframes fadeAnim {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        @keyframes slideAnim {
+            0% { transform: translateY(100px); opacity: 0; }
+            50% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+        @keyframes zoomAnim {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.5); opacity: 0; }
+        }
+        .next-btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pre-loading">
+        <h1>elynnn siap ga? 😊</h1>
+        <button id="siap-btn">Siap! 💖</button>
+    </div>
+    
+    <div class="loading">
+        <div class="love">💖</div>
+    </div>
+    
+    <div class="transition-overlay">
+        <div class="transition-text" id="transition-text"></div>
+    </div>
+    
+    <div class="container">
+        <!-- Segmen 1: Pertanyaan Utama -->
+        <div id="segmen1" class="segment active">
+            <div class="sharkie-decor">🦈</div>
+            <h1>💕 Hai elynnnn! 💕</h1>
+            <p>ataa cumaa mau bilaangg... ataaa nyamaan kalo lagi sama elynn</p>
+            <p>jadiii, ataa mauu confess buat yang keduaa kalinyaa...</p>
+            <p>elynn mauu gaa jadii cowonyaa ataaa??</p>
+            <div class="buttons">
+                <button id="iya-mau">Iya Mau! 💖</button>
+                <button id="gamau">Gamau 😢</button>
+            </div>
+        </div>
+        
+        <!-- Segmen 2: Kata-Kata Manis -->
+        <div id="segmen2" class="segment">
+            <div class="sharkie-decor">🦈</div>
+            <div class="sharkie-decor">🦈</div>
+            <h1>kamuu tau gaa??</h1>
+            <p>kaloo ataa lagii mainn samaa elynn, entahh ituu main gunungg, ataaupun main yang lainn pasti rasanyaa nyaman banget</p>
+            <P>apalaagi kalo main sambil on miiicc...</P>
+            <button class="next-btn" onclick="nextSegment(3)">Lanjut ke Segmen Selanjutnya ➡️</button>
+        </div>
+        
+        <!-- Segmen 3: Kosong untuk Diisi Sendiri -->
+        <div id="segmen3" class="segment">
+            <div class="sharkie-decor">🦈</div>
+            <div class="sharkie-decor">🦈</div>
+            <div class="sharkie-decor">🦈</div>
+            <h1>fyi...</h1>
+            <p>ataa bener beneer senengg bangett bisaa mabaar samaa elynn tiap harii</p>
+            <p></p>
+            <button class="next-btn" onclick="nextSegment(4)">Lanjut ke Segmen Selanjutnya ➡️</button>
+        </div>
+        
+        <!-- Segmen 4: Kosong untuk Diisi Sendiri -->
+        <div id="segmen4" class="segment">
+            <div class="sharkie-decor">🦈</div>
+            <div class="sharkie-decor">🦈</div>
+            <h1>Segmen 4: Isi Sendiri! 🐾</h1>
+            <p>Tempat untuk konten tambahan. Bisa tambah foto, video, atau animasi lagi.</p>
+            <p>dudhdhd</p>
+            <p>shsh</p>
+            <button class="next-btn" onclick="nextSegment(5)">Lanjut ke Segmen Selanjutnya ➡️</button>
+        </div>
+        
+        <!-- Segmen 5: Kosong untuk Diisi Sendiri -->
+        <div id="segmen5" class="segment">
+            <div class="sharkie-decor">🦈</div>
+            <div class="sharkie-decor">🦈</div>
+            <div class="sharkie-decor">🦈</div>
+            <div class="sharkie-decor">🦈</div>
+            <h1>Segmen 5: Isi Sendiri! 🎉</h1>
+            <p>Segmen terakhir. Selesai dengan pesan penutup atau apa pun yang romantis.</p>
+            <p>Semoga dia bilang iya! 😘</p>
+        </div>
+    </div>
+
+    <script>
+        // Pre-loading: Klik "Siap" masuk ke loading
+        $('#siap-btn').click(function() {
+            $('.pre-loading').fadeOut(500, function() {
+                $('.loading').fadeIn(500);
+                // Mulai loading animation
+                setTimeout(function() {
+                    $('.loading').fadeOut(500, function() {
+                        $('.container').fadeIn(500);
+                    });
+                }, 2500);
+            });
+        });
+
+        // Array teks untuk tombol "gamau" dan counter
+        const gamauTexts = [
+            "eits gaboleh dongggg", 
+            "jangan gituu yahh", 
+            "nooo no sayangg", 
+            "kamuuu benerann??", 
+            "gaboleeehh, harus mauuu!", 
+            "mauu dongg elynn :>", 
+            "please sayangg"
+        ];
+        let gamauIndex = 0;
+
+        // Fungsi untuk tombol "Gamau"
+        $('#gamau').click(function() {
+            const buttonPos = $(this).offset();
+            const text = gamauTexts[gamauIndex];
+            const floating = $('<div class="floating-text">' + text + '</div>');
+            floating.css({
+                left: buttonPos.left + $(this).width() / 2 - 50,
+                top: buttonPos.top
+            });
+            $('body').append(floating);
+            setTimeout(() => floating.remove(), 2000);
+            
+            gamauIndex = (gamauIndex + 1) % gamauTexts.length;
+            
+            const segment = $('.segment.active');
+            const segmentOffset = segment.offset();
+            const segmentWidth = segment.outerWidth();
+            const segmentHeight = segment.outerHeight();
+            const buttonWidth = $(this).outerWidth();
+            const buttonHeight = $(this).outerHeight();
+            const randomLeft = segmentOffset.left + Math.random() * (segmentWidth - buttonWidth - 20) + 10;
+            const randomTop = segmentOffset.top + Math.random() * (segmentHeight - buttonHeight - 100) + 50;
+            $(this).css({
+                left: randomLeft + 'px',
+                top: randomTop + 'px'
+            });
+        });
+
+        // Fungsi untuk tombol "Iya Mau"
+        $('#iya-mau').click(function() {
+            nextSegment(2);
+        });
+
+        // Fungsi untuk navigasi segmen dengan transisi berbeda
+        function nextSegment(num) {
+            const transitions = {
+                3: { text: "YEYY MAKACII YAAA", anim: "fade" },
+                4: { text: "WOWW LEBIH SERU LAGI", anim: "slide" },
+                5: { text: "SIAP SIAP YAA SAYANG", anim: "zoom" }
+            };
+            const trans = transitions[num] || { text: "LANJUT YUK!", anim: "fade" };
+            
+            $('#transition-text').text(trans.text).removeClass('fade slide zoom').addClass(trans.anim);
+            $('.transition-overlay').addClass('active');
+            
+            setTimeout(function() {
+                $('.transition-overlay').removeClass('active');
+                $('.segment').removeClass('active');
+                $('#segmen' + num).addClass('active');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
